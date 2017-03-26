@@ -8,7 +8,8 @@ import {
     ListView,
     TouchableOpacity,
     AsyncStorage,
-    ActivityIndicator
+    ActivityIndicator,
+    TextInput
 } from 'react-native';
 
 import Restaurant from './restaurant';
@@ -17,6 +18,28 @@ import Settings from './settings';
 import { actionCreators } from './reducer';
 import { connect } from 'react-redux';
 
+const styles = StyleSheet.create({
+    header : { 
+        backgroundColor: '#C31112',  paddingTop: 20  , flex: 1, height: 70, maxHeight: 70, flexDirection: 'row'
+    },
+    filterButton: {
+        margin: 10, borderColor: 'white', borderWidth: 1, borderRadius: 5
+    },
+    restaurantTextInput: {
+        borderWidth: 1, 
+        color: 'black', 
+        borderColor: 'white', 
+        backgroundColor : 'white',
+        margin: 10, 
+        paddingLeft: 20, 
+        borderRadius: 10
+    } , 
+    listItem : { 
+        borderBottomWidth : 1,
+        borderBottomColor: 'gray',
+       
+    }
+})
 const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
 
 class Home extends Component {
@@ -57,56 +80,68 @@ class Home extends Component {
 
         }
         return (
-            <View>
-                <Text>This is home page</Text>
-                <TouchableOpacity onPress={() => {
-                    navigator.push({
-                        component: Settings
-                    });
-                }} >
-                    <Text>Filter</Text>
-                </TouchableOpacity>
-
-                <ListView
-                    dataSource={this.state.dataSource}
-                    renderRow={(rowData) =>
-                        <View>
-                            <Restaurant name={rowData.name} image_url={rowData.image_url} />
+            <View style= {{flex: 1 }} >
+                <View style={ styles.header } >
+                    <TouchableOpacity style={[{ flex: 1 }, styles.filterButton]} onPress={() => {
+                        navigator.push({
+                            component: Settings
+                        });
+                    }} >
+                        <View style={{ justifyContent: 'center', alignItems: 'center', height: 30 }}>
+                            <Text style={{ color: 'white' }} >Filter</Text>
                         </View>
-                    }
-                />
-            </View>
-        )
+
+                    </TouchableOpacity>
+                    <View style={{ flex: 4 }}>
+                        < TextInput style={[ { flex: 1 } , styles.restaurantTextInput  ] } 
+                         placeholder='restaurant'   placeholderTextColor="gray" />
+                    </View>
+                </View>
+
+                    <ListView
+                        dataSource={this.state.dataSource}
+                        renderRow={(rowData) =>
+                            <View style = { styles.listItem } >
+                                <Restaurant name={rowData.name} image_url={rowData.image_url} rating={rowData.rating}
+                                    review_count={rowData.review_count} distance={rowData.distance}
+                                     review_count={rowData.review_count}
+                                     display_address = { rowData.location.display_address}
+                                />
+                            </View>
+                        }
+                    />
+                </View>
+                )
     }
     componentDidMount() {
-        this.fetchToken().then((data) => {
-            this.setState({ accessToken: data.access_token });
-            this.getRestaurantsFromApiAsync(data.access_token).then(restaurantData => {
-                this.setState({ dataSource: ds.cloneWithRows(restaurantData.businesses) });
-                this.setState({ loading: false });
-            })
-        })
-    }
-    async getAccessTokenFromStorage() {
+                    this.fetchToken().then((data) => {
+                        this.setState({ accessToken: data.access_token });
+                        this.getRestaurantsFromApiAsync(data.access_token).then(restaurantData => {
+                            this.setState({ dataSource: ds.cloneWithRows(restaurantData.businesses) });
+                            this.setState({ loading: false });
+                        })
+                    })
+                }
+                async getAccessTokenFromStorage() {
         try {
-            let accessTokenFromStorage = await AsyncStorage.getItem("access_token");
+                    let accessTokenFromStorage = await AsyncStorage.getItem("access_token");
             this.setState({
-                accessToken: accessTokenFromStorage
+                    accessToken: accessTokenFromStorage
             });
         } catch (error) {
-        }
-    }
+                }
+                }
     async fetchToken() {
         const params = {
-            client_id: 'tQyHUDn9ocxSt62kfaLS1w', // use your own
+                    client_id: 'tQyHUDn9ocxSt62kfaLS1w', // use your own
             client_secret: '863nET7GMULkWMRaqCsnwV5xLwsmMv6TsQEsMxT3uoUMvV6mg6sCGXEO3XyccPUr', // use your own
             grant_type: 'client_credentials'
         }
 
         const request = new Request('https://api.yelp.com/oauth2/token', {
-            method: 'POST',
+                    method: 'POST',
             headers: new Headers({
-                'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+                    'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
             }),
             body: `client_id=${params.client_id}&client_secret=${params.client_secret}&grant_type=${params.grant_type}`
         });
@@ -119,24 +154,24 @@ class Home extends Component {
                 return json;
             })
             .catch((error) => {
-                console.error(error);
+                    console.error(error);
                 alert("Can not connect internet");
                 return {};
             });
     }
     getRestaurantsFromApiAsync(token) {
 
-        let checkedListName = (this.props.redux === undefined || this.props.redux.checkedListName === undefined)
+                    let checkedListName = (this.props.redux === undefined || this.props.redux.checkedListName === undefined)
             ? [] : this.props.redux.checkedListName;
         let categoryQuery = "&categories=" + checkedListName.toString();
 
-        let url = 'https://api.yelp.com/v3/businesses/search?limit=3&term=delis&latitude=37.786882&longitude=-122.399972'
+        let url = 'https://api.yelp.com/v3/businesses/search?limit=5&term=delis&latitude=37.786882&longitude=-122.399972'
             + categoryQuery
             ;
         let request = new Request(url, {
-            method: 'GET',
+                    method: 'GET',
             headers: new Headers({
-                'Authorization': 'Bearer ' + token,
+                    'Authorization': 'Bearer ' + token,
             })
         });
 
@@ -146,7 +181,7 @@ class Home extends Component {
                 return responseJson;
             })
             .catch((error) => {
-                console.error(error);
+                    console.error(error);
                 alert("Can not connect internet");
                 return [];
             });
@@ -160,7 +195,7 @@ class Home extends Component {
 // End of your component
 const mapStateToProps = (state) => {
     return {
-        redux: state.searchReducer.params
+                    redux: state.searchReducer.params
     }
 }
 // Maping storage of Redux to props of your component

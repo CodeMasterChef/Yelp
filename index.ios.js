@@ -22,7 +22,7 @@ const store = createStore(reducers, devToolsEnhancer());
 
 const defaultRoute = {
   title: 'Login',
-  component: Login
+  component: Home
 }
 
 class Yelp extends Component {
@@ -38,7 +38,7 @@ class Yelp extends Component {
    
     return (
       <Provider store={store}>
-        <Navigator style={{ paddingTop: 20 }}
+        <Navigator style={{  }}
           initialRoute={defaultRoute}
           renderScene={(route, navigator) => this.renderScene(route, navigator)} />
       </Provider>

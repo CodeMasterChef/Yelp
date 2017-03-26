@@ -24,7 +24,7 @@ class SwitchView extends Component {
         const {navigator, dispatch} = this.props;
 
         return (
-            <View style={{ flex: 1, flexDirection: 'row' }}>
+            <View style={{ flex: 1, flexDirection: 'row' , margin: 5 }}>
                 <Text style={{ flex: 1, marginLeft: 10 }} >{this.props.content.name}</Text>
                 <View style={{ flex: 1, alignItems: 'flex-end', marginRight: 10 }}>
                     <Switch
