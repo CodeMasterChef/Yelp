@@ -48,7 +48,7 @@ class Home extends Component {
         super(props);
 
         this.state = {
-            restaurants: [],
+            restaurantList: [],
             loading: true,
             dataSource: ds.cloneWithRows([])
         };
@@ -94,7 +94,7 @@ class Home extends Component {
                     </TouchableOpacity>
                     <View style={{ flex: 4 }}>
                         < TextInput style={[ { flex: 1 } , styles.restaurantTextInput  ] } 
-                         placeholder='restaurant'   placeholderTextColor="gray" />
+                         placeholder='restaurant'   placeholderTextColor="gray"   onChangeText={(text) => this.filterRestaurants({ text })} />
                     </View>
                 </View>
 
@@ -117,7 +117,7 @@ class Home extends Component {
                     this.fetchToken().then((data) => {
                         this.setState({ accessToken: data.access_token });
                         this.getRestaurantsFromApiAsync(data.access_token).then(restaurantData => {
-                            this.setState({ dataSource: ds.cloneWithRows(restaurantData.businesses) });
+                            this.setState({ restaurantList : restaurantData.businesses , dataSource: ds.cloneWithRows(restaurantData.businesses) });
                             this.setState({ loading: false });
                         })
                     })
@@ -131,7 +131,7 @@ class Home extends Component {
         } catch (error) {
                 }
                 }
-    async fetchToken() {
+     fetchToken() {
         const params = {
                     client_id: 'tQyHUDn9ocxSt62kfaLS1w', // use your own
             client_secret: '863nET7GMULkWMRaqCsnwV5xLwsmMv6TsQEsMxT3uoUMvV6mg6sCGXEO3XyccPUr', // use your own
@@ -187,7 +187,19 @@ class Home extends Component {
             });
     }
 
+      filterRestaurants(name) {
+        let keyword = name.text.toLowerCase();
+        let filteredList = [];
+        for (let i = 0; i < this.state.restaurantList.length; i++) {
+            let restaurant = this.state.restaurantList[i];
+            let restaurantName = restaurant.name.toLowerCase();
+            if (restaurantName.search(keyword) !== -1) {
+                filteredList.push(restaurant);
+            }
+        }
+        this.setState({ dataSource: ds.cloneWithRows(filteredList) });
 
+    }
 
 }
 

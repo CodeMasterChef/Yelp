@@ -28,8 +28,8 @@ export default class Restaurant extends Component {
                
                 <View style={{ flex: 2, margin: 10 }} >
                     <View flexDirection='row' >
-                        <Text style={{ flex: 2 }}>{this.props.name}</Text>
-                        <Text style={{ flex: 1, alignItems: 'flex-end' }}>{Math.round(this.props.distance)} mi</Text>
+                        <Text style={{ flex: 2, fontWeight: 'bold'  }} numberOfLines={1}>{this.props.name}</Text>
+                        <Text style={{ flex: 1,  textAlign: 'right' }}>{Math.round(this.props.distance)} mi</Text>
                     </View>
                     <View flexDirection='row'>
                         <Icon
