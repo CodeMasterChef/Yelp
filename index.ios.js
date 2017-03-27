@@ -22,7 +22,7 @@ const store = createStore(reducers, devToolsEnhancer());
 
 const defaultRoute = {
   title: 'Login',
-  component: Home
+  component: Login
 }
 
 class Yelp extends Component {

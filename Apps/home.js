@@ -59,9 +59,8 @@ class Home extends Component {
         if (this.props.redux !== undefined) {
             let mustFilter = this.props.redux.mustFilter;
             if (mustFilter) {
-
                 this.getRestaurantsFromApiAsync(this.state.accessToken).then(data => {
-                    this.setState({ dataSource: ds.cloneWithRows(data.businesses) });
+                    this.setState({ restaurantList : data.businesses  , dataSource: ds.cloneWithRows(data.businesses) });
                     mustFilter = false;
                 });
             }
